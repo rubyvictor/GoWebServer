@@ -5,9 +5,9 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	s "strings"
-	"sort"
 	"regexp"
+	"sort"
+	s "strings"
 )
 
 func getWordsFrom(text string) []string {
@@ -21,12 +21,6 @@ func countWords(words []string) map[string]int {
 		wordCounts[word]++
 	}
 	return wordCounts
-}
-
-func consoleOut(orderedWordCounts PairList) {
-	for _, wordCount := range orderedWordCounts {
-		fmt.Printf("%v\n", wordCount)
-	}
 }
 
 func rankByWordCount(wordFrequencies map[string]int) PairList {
@@ -52,38 +46,35 @@ func (p PairList) Len() int           { return len(p) }
 func (p PairList) Less(i, j int) bool { return p[i].Value < p[j].Value }
 func (p PairList) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 
-
-func findWordsInText(w http.ResponseWriter, r *http.Request) {
+func displayPage(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
-	fmt.Println(r.Form)
-	fmt.Println("path", r.URL.Path)
-	fmt.Println("scheme", r.URL.Scheme)
-	fmt.Println(r.Form["url_long"])
-	for key, value := range r.Form {
-		fmt.Println("key", key)
-		fmt.Println("val:", s.Join(value, ""))
-	}
 	fmt.Fprintf(w, "Hello & Welcome To My First GoLang Server")
 }
 
 func text(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("method:", r.Method)
-	// var result PairList
+
 	if r.Method == "GET" {
 		t, _ := template.ParseFiles("form.gtpl")
 		t.Execute(w, nil)
 	} else {
 		r.ParseForm()
-		// result = reverseWords(r.FormValue("text"))
-		// result = rankByWordCount(countWords(getWordsFrom(r.FormValue("text"))))
-		fmt.Println("Top Ten Words:", rankByWordCount(countWords(getWordsFrom(r.FormValue("text")))))
+		fmt.Println(r.Form)
+		fmt.Println("path", r.URL.Path)
+		fmt.Println("scheme", r.URL.Scheme)
+		fmt.Println(r.Form["url_long"])
+		for key, value := range r.Form {
+			fmt.Println("key", key)
+			fmt.Println("val:", s.Join(value, ""))
+			fmt.Fprintf(w, "Top 10 Words:%v", rankByWordCount(countWords(getWordsFrom(s.Join(value, "")))))
+		}
 	}
-	
+
 }
 
 func main() {
-	http.HandleFunc("/", findWordsInText)
+	http.HandleFunc("/", displayPage)
 	http.HandleFunc("/text", text)
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
