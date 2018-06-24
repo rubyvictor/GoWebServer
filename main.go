@@ -60,10 +60,10 @@ func text(w http.ResponseWriter, r *http.Request) {
 		t.Execute(w, nil)
 	} else {
 		r.ParseForm()
-		fmt.Println(r.Form)
-		fmt.Println("path", r.URL.Path)
-		fmt.Println("scheme", r.URL.Scheme)
-		fmt.Println(r.Form["url_long"])
+		// fmt.Println(r.Form)
+		// fmt.Println("path", r.URL.Path)
+		// fmt.Println("scheme", r.URL.Scheme)
+		// fmt.Println(r.Form["text"])
 		for key, value := range r.Form {
 			fmt.Println("key", key)
 			fmt.Println("val:", s.Join(value, ""))
