@@ -23,6 +23,10 @@ func countWords(words []string) map[string]int {
 	return wordCounts
 }
 
+func filterPairs(allPairs PairList) PairList {
+	return allPairs[0:10]
+}
+
 func rankByWordCount(wordFrequencies map[string]int) PairList {
 	pl := make(PairList, len(wordFrequencies))
 	i := 0
@@ -31,8 +35,7 @@ func rankByWordCount(wordFrequencies map[string]int) PairList {
 		i++
 	}
 	sort.Sort(sort.Reverse(pl))
-	slicedPl := pl[0:10]
-	return slicedPl
+	return filterPairs(pl)
 }
 
 type Pair struct {
